@@ -1,5 +1,7 @@
 package idv.teddy;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
@@ -17,5 +19,10 @@ public class Config {
         Converter<Date, String> dateToStringConverter = ctx -> ctx.getSource() != null ? sdf.format(ctx.getSource()) : null;
         modelMapper.typeMap(Date.class, String.class).setConverter(dateToStringConverter);
         return modelMapper;
+    }
+
+    @Bean
+    public ObjectMapper objectMapper() {
+        return new ObjectMapper();
     }
 }
