@@ -38,7 +38,7 @@ class GoHappinessControllerTest {
 
         mockMvc.perform(MockMvcRequestBuilders.post("/activity").contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
-                .andExpect(MockMvcResultMatchers.content().string(objectMapper.writeValueAsString(response)));
+                .andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(response)));
     }
 
     @Test
@@ -49,7 +49,7 @@ class GoHappinessControllerTest {
 
         mockMvc.perform(MockMvcRequestBuilders.post("/activity").contentType(MediaType.APPLICATION_JSON_VALUE).content(objectMapper.writeValueAsString(ActivityDto.builder().build())))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
-                .andExpect(MockMvcResultMatchers.content().string(objectMapper.writeValueAsString(response)));
+                .andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(response)));
     }
 
     @Test
@@ -60,12 +60,13 @@ class GoHappinessControllerTest {
 
         mockMvc.perform(MockMvcRequestBuilders.post("/activity").contentType(MediaType.APPLICATION_JSON_VALUE).content(objectMapper.writeValueAsString(ActivityDto.builder().title("").build())))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
-                .andExpect(MockMvcResultMatchers.content().string(objectMapper.writeValueAsString(response)));
+                .andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(response)));
     }
 
     @Test
     void testAdd() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.post("/activity").contentType(MediaType.APPLICATION_JSON_VALUE).content(objectMapper.writeValueAsString(ActivityDto.builder().title("舞誥頌").build())))
+        mockMvc.perform(MockMvcRequestBuilders.post("/activity").contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(objectMapper.writeValueAsString(ActivityDto.builder().title("舞誥頌").startDate("2021-09-25").build())))
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
 }

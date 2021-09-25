@@ -17,6 +17,7 @@ public class ActivityDto {
     private String title;
 
     @NotBlank(groups = OnCreate.class)
+    // TODO: format check
     private String startDate;
 
     private String endDate;
