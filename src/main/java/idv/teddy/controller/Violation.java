@@ -3,7 +3,6 @@ package idv.teddy.controller;
 import lombok.Data;
 
 @Data
-public class Violation {
-    private final String property;
+class Violation {
     private final String message;
 }

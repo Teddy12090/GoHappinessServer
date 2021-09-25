@@ -16,8 +16,11 @@ public class ActivityDto {
     @NotBlank(groups = OnCreate.class)
     private String title;
 
+    @NotBlank(groups = OnCreate.class)
     private String startDate;
+
     private String endDate;
+
     private String startTime;
     private String endTime;
 }

@@ -43,7 +43,9 @@ public class GoHappinessController {
     }
 
     @PostMapping("/activity")
-    public int add(@Validated(OnCreate.class) @NotNull @RequestBody(required = false) ActivityDto activityDto) {
+    public int add(@Validated(OnCreate.class)
+                   @NotNull(message = "{payload.notnull}")
+                   @RequestBody(required = false) ActivityDto activityDto) {
         System.out.println("title: " + activityDto.getTitle());
         return 0;
     }

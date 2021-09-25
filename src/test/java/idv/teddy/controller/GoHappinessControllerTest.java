@@ -17,7 +17,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 @AutoConfigureTestDatabase
 @AutoConfigureMockMvc
 @AutoConfigureDataJpa
-public class GoHappinessControllerTest {
+class GoHappinessControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
@@ -25,16 +25,16 @@ public class GoHappinessControllerTest {
     private ObjectMapper objectMapper;
 
     @Test
-    public void testInfo() throws Exception {
+    void testInfo() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/info"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().string("0"));
     }
 
     @Test
-    public void testAddForNullBody() throws Exception {
+    void testAddForNullBody() throws Exception {
         ValidationErrorResponse response = new ValidationErrorResponse();
-        response.getViolations().add(new Violation("add.activityDto", "must not be null"));
+        response.getViolations().add(new Violation("Payload must not be null."));
 
         mockMvc.perform(MockMvcRequestBuilders.post("/activity").contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
@@ -42,9 +42,10 @@ public class GoHappinessControllerTest {
     }
 
     @Test
-    public void testAddForNullTitle() throws Exception {
+    void testAddForNullTitle() throws Exception {
         ValidationErrorResponse response = new ValidationErrorResponse();
-        response.getViolations().add(new Violation("title", "must not be blank"));
+        response.getViolations().add(new Violation("title must not be blank"));
+        response.getViolations().add(new Violation("startDate must not be blank"));
 
         mockMvc.perform(MockMvcRequestBuilders.post("/activity").contentType(MediaType.APPLICATION_JSON_VALUE).content(objectMapper.writeValueAsString(ActivityDto.builder().build())))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
@@ -52,9 +53,10 @@ public class GoHappinessControllerTest {
     }
 
     @Test
-    public void testAddForEmptyTitle() throws Exception {
+    void testAddForEmptyTitle() throws Exception {
         ValidationErrorResponse response = new ValidationErrorResponse();
-        response.getViolations().add(new Violation("title", "must not be blank"));
+        response.getViolations().add(new Violation("title must not be blank"));
+        response.getViolations().add(new Violation("startDate must not be blank"));
 
         mockMvc.perform(MockMvcRequestBuilders.post("/activity").contentType(MediaType.APPLICATION_JSON_VALUE).content(objectMapper.writeValueAsString(ActivityDto.builder().title("").build())))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
@@ -62,7 +64,7 @@ public class GoHappinessControllerTest {
     }
 
     @Test
-    public void testAdd() throws Exception {
+    void testAdd() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post("/activity").contentType(MediaType.APPLICATION_JSON_VALUE).content(objectMapper.writeValueAsString(ActivityDto.builder().title("舞誥頌").build())))
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
