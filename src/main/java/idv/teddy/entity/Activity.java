@@ -5,9 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.sql.Date;
 import java.sql.Time;
 
@@ -18,19 +16,26 @@ import java.sql.Time;
 @NoArgsConstructor
 public class Activity {
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private int id;
 
     private String title;
 
     @Column(name = "start_date")
-    private String startDate;
+    private Date startDate;
 
     @Column(name = "end_date")
-    private String endDate;
+    private Date endDate;
 
     @Column(name = "start_time")
-    private String startTime;
+    private Time startTime;
 
     @Column(name = "end_time")
-    private String endTime;
+    private Time endTime;
+
+    @Column
+    private String url;
+
+    @Column
+    private String source;
 }

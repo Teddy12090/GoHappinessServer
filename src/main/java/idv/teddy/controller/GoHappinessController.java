@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -43,10 +44,11 @@ public class GoHappinessController {
     }
 
     @PostMapping("/activity")
-    public int add(@Validated(OnCreate.class)
-                   @NotNull(message = "{payload.notnull}")
-                   @RequestBody(required = false) ActivityDto activityDto) {
-        System.out.println("title: " + activityDto.getTitle());
-        return 0;
+    public ActivityDto add(@Validated(OnCreate.class) @Valid
+                           @NotNull(message = "{payload.notnull}")
+                           @RequestBody(required = false) ActivityDto activityDto) {
+        Activity activity = modelMapper.map(activityDto, Activity.class);
+        activity = activityRepository.save(activity);
+        return modelMapper.map(activity, ActivityDto.class);
     }
 }
