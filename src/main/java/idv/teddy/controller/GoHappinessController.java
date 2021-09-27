@@ -25,16 +25,6 @@ public class GoHappinessController {
     private final ActivityRepository activityRepository;
     private final ModelMapper modelMapper;
 
-    @GetMapping("/lastUpdate")
-    public String lastUpdate() {
-        return "2021-09-22";
-    }
-
-    @GetMapping("/info")
-    public String total() {
-        return String.valueOf(activityRepository.count());
-    }
-
     @GetMapping("/activities")
     public List<ActivityDto> activities() {
         List<Activity> activities = StreamSupport.stream(activityRepository.findAll().spliterator(), false).collect(Collectors.toList());

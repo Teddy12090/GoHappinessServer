@@ -27,10 +27,10 @@ public class ActivityDto {
     @StringDateTimeFormat(value = "yyyy-MM-dd")
     private String endDate;
 
-    @StringDateTimeFormat(value = "HH:MM:SS")
+    @StringDateTimeFormat(value = "HH:mm:ss")
     private String startTime;
 
-    @StringDateTimeFormat(value = "HH:MM:SS")
+    @StringDateTimeFormat(value = "HH:mm:ss")
     private String endTime;
 
     @NotBlank(groups = OnCreate.class)

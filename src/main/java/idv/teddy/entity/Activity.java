@@ -1,11 +1,9 @@
 package idv.teddy.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.sql.Date;
 import java.sql.Time;
 
@@ -14,14 +12,17 @@ import java.sql.Time;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@With
 public class Activity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private int id;
 
+    @NotNull
     private String title;
 
     @Column(name = "start_date")
+    @NotNull
     private Date startDate;
 
     @Column(name = "end_date")
@@ -34,8 +35,14 @@ public class Activity {
     private Time endTime;
 
     @Column
+    @NotNull
     private String url;
 
     @Column
+    @NotNull
     private String source;
+
+    @Column
+    @Lob
+    private byte[] cover;
 }

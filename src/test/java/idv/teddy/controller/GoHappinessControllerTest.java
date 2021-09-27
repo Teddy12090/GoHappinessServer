@@ -2,6 +2,7 @@ package idv.teddy.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import idv.teddy.dto.ActivityDto;
+import idv.teddy.entity.Activity;
 import idv.teddy.repository.ActivityRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,12 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.sql.Date;
+import java.sql.Time;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
@@ -22,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @AutoConfigureMockMvc
 @AutoConfigureDataJpa
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-class GoHappinessControllerTest {
+public class GoHappinessControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
@@ -33,14 +40,7 @@ class GoHappinessControllerTest {
     private ActivityRepository activityRepository;
 
     @Test
-    void testInfo() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/info"))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().string("0"));
-    }
-
-    @Test
-    void testAddForNullBody() throws Exception {
+    public void testAddForNullBody() throws Exception {
         ValidationErrorResponse response = new ValidationErrorResponse();
         response.getViolations().add(new Violation("Payload must not be null."));
 
@@ -50,7 +50,7 @@ class GoHappinessControllerTest {
     }
 
     @Test
-    void testAddForNullTitle() throws Exception {
+    public void testAddForNullTitle() throws Exception {
         ValidationErrorResponse response = new ValidationErrorResponse();
         response.getViolations().add(new Violation("title must not be blank"));
         response.getViolations().add(new Violation("startDate must not be blank"));
@@ -63,7 +63,7 @@ class GoHappinessControllerTest {
     }
 
     @Test
-    void testAddForEmptyTitle() throws Exception {
+    public void testAddForEmptyTitle() throws Exception {
         ValidationErrorResponse response = new ValidationErrorResponse();
         response.getViolations().add(new Violation("title must not be blank"));
         response.getViolations().add(new Violation("startDate must not be blank"));
@@ -76,7 +76,7 @@ class GoHappinessControllerTest {
     }
 
     @Test
-    void testAddForInvalidDateFormat() throws Exception {
+    public void testAddForInvalidDateFormat() throws Exception {
         ValidationErrorResponse response = new ValidationErrorResponse();
         response.getViolations().add(new Violation("startDate [2021/09/25] must be format of [yyyy-MM-dd]."));
         response.getViolations().add(new Violation("endDate [2022/09/25] must be format of [yyyy-MM-dd]."));
@@ -94,10 +94,10 @@ class GoHappinessControllerTest {
     }
 
     @Test
-    void testAddForInvalidTimeFormat() throws Exception {
+    public void testAddForInvalidTimeFormat() throws Exception {
         ValidationErrorResponse response = new ValidationErrorResponse();
-        response.getViolations().add(new Violation("startTime [8:00] must be format of [HH:MM:SS]."));
-        response.getViolations().add(new Violation("endTime [18.00.00] must be format of [HH:MM:SS]."));
+        response.getViolations().add(new Violation("startTime [8:00] must be format of [HH:mm:ss]."));
+        response.getViolations().add(new Violation("endTime [18.00.00] must be format of [HH:mm:ss]."));
 
         mockMvc.perform(MockMvcRequestBuilders.post("/activity").contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(objectMapper.writeValueAsString(ActivityDto.builder()
@@ -113,7 +113,7 @@ class GoHappinessControllerTest {
     }
 
     @Test
-    void testAddForInvalidUrl() throws Exception {
+    public void testAddForInvalidUrl() throws Exception {
         ValidationErrorResponse response = new ValidationErrorResponse();
         response.getViolations().add(new Violation("url must be a valid URL"));
 
@@ -129,7 +129,7 @@ class GoHappinessControllerTest {
     }
 
     @Test
-    void testAdd() throws Exception {
+    public void testAdd() throws Exception {
         ActivityDto activity1 = ActivityDto.builder()
                 .title("舞誥頌")
                 .startDate("2021-09-25")
@@ -174,5 +174,40 @@ class GoHappinessControllerTest {
                         .url("http://localhost/1").build())))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
                 .andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(errorReqponse)));
+    }
+
+    @Test
+    public void activities() throws Exception {
+        Activity activity1 = Activity.builder()
+                .title("舞誥頌 1")
+                .startDate(Date.valueOf(LocalDate.of(2021, 9, 27)))
+                .endDate(Date.valueOf(LocalDate.of(2022, 9, 27)))
+                .startTime(Time.valueOf(LocalTime.of(8, 0)))
+                .endTime(Time.valueOf(LocalTime.of(20, 30)))
+                .url("http://localhost/1")
+                .source("頌1").build();
+        Activity activity2 = Activity.builder()
+                .title("舞誥頌 2")
+                .startDate(Date.valueOf(LocalDate.of(2020, 9, 30)))
+                .endDate(Date.valueOf(LocalDate.of(2022, 10, 27)))
+                .startTime(Time.valueOf(LocalTime.of(9, 45)))
+                .endTime(Time.valueOf(LocalTime.of(20, 0)))
+                .url("http://localhost/2")
+                .source("頌2").build();
+        Activity activity3 = Activity.builder()
+                .title("舞誥頌 3")
+                .startDate(Date.valueOf(LocalDate.of(2021, 10, 1)))
+                .endDate(Date.valueOf(LocalDate.of(2023, 5, 30)))
+                .startTime(Time.valueOf(LocalTime.of(9, 0)))
+                .endTime(Time.valueOf(LocalTime.of(21, 30)))
+                .url("http://localhost/3")
+                .source("頌3").build();
+        activityRepository.save(activity1);
+        activityRepository.save(activity2);
+        activityRepository.save(activity3);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/activities"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(List.of(activity1, activity2, activity3))));
     }
 }
